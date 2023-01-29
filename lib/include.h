@@ -1,7 +1,7 @@
 
+#ifndef LIB_INCLUDE_H_
+#define LIB_INCLUDE_H_
 
-#ifndef INCLUDE_H_
-#define INCLUDE_H_
 
 #include <stdint.h>
 #include <stdbool.h>

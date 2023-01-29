@@ -17,3 +17,13 @@ extern void Configurar_GPIO(void)
 
     //DIR Y DEN para entradas y salidas.
 }
+
+extern void Delay(void)
+{
+  unsigned long volatile time;
+  time = 1600000;
+  while(time)
+  {
+		time--;
+  }
+}

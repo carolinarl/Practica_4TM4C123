@@ -35,13 +35,13 @@ extern void Configurar_UART5(void)
     // UART Fractional Baud-Rate Divisor (UARTFBRD) pag.915
     /*
     BRD = BRDI + BRDF = UARTSysClk / (ClkDiv * Baud Rate)
-    BRD = 33,000,000 / (16 * 19200) = 107.421875
+    BRD = 30,000,000 / (16 * 57600) = 32.55208333
     
     UARTFBRD[DIVFRAC] = integer(BRDF * 64 + 0.5)
-    UARTFBRD[DIVFRAC] = integer(0.421875 * 64 + 0.5) = 27.5
+    UARTFBRD[DIVFRAC] = integer(0.55208333 * 64 + 0.5) = 35.83
     */
-    UART5->IBRD = 107;
-    UART5->FBRD = 27;
+    UART5->IBRD = 32;
+    UART5->FBRD = 35;
     //  UART Line Control (UARTLCRH) pag.916
     UART5->LCRH = (0x3<<5)|(1<<4);
     //  UART Clock Configuration(UARTCC) pag.939
@@ -76,53 +76,3 @@ extern void printString(char* string)
        printChar(*(string++));
     }
 }
-
-
-extern int readString(char delimitador, char *string)
-{
-   int i = 0;
-   char c = readChar();
-
-   while(c != delimitador)
-   { 
-            string[i] = c; //Guardado de caracter por caracter en la cadena 
-            i++;
-            c = readChar(); 
-   }
-
-   return i;
-}
-
-
-extern void INVERSION(char *string, int i)
-{
-    char aux; 
-
-    for (int j = 0; j < i/2; j++){
-        aux = string[j];            //En la cadena "aux" se guardan los caracteres presentados del final al inicio de su envío
-        string[j] = string[i-1- j]; 
-        string[i-1-j] = aux; 
-    }
-
-}
-
-extern void NUMEROS(char *string, char *string_num, int i)
-{
-    int l = 0;
-    int p = 0; 
-    while(l<(i*2)){ //i es el contador del vector cuyos espacios fueron duplicados
-        string_num[l] = string[p]; //guardado de caracter por caracter en la nueva cadena
-        l++;  //La cuenta para ir agregando los números tiene que ir de 2 en 2 caracteres
-        string_num[l] = (unsigned char)(49+p); //inserción de los números
-        p++; //Cuenta para agregar el siguiente caracter de la cadena que contiene únicamente letras a la que contiene letras y números
-        l++;
-    }
-    
-    string = string_num; // Retorno de una cadena con números y letras llamada "num" a "string", la cadena original
-}
-
-
-//Experimento 2
-//El envio es su nombre  (rave) 
-// invertirlo y regresarlo con numeros consecutivos
-// entre letras (e1v2a3r) 
