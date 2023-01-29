@@ -3,6 +3,44 @@
 #include "lib/include.h"
 // ESTE PROGRAMA ES DECLARADO EN SU LIBRERÍA COMO PROTOTIPO DE FUNCIÓN
 
+extern void Configurar_UART0(void)
+{
+    SYSCTL->RCGCUART  = (1<<0);   
+    SYSCTL->RCGCGPIO |= (1<<0);
+    //(GPIOAFSEL) pag.671 Enable alternate function
+    GPIOA->AFSEL = (1<<1) | (1<<0);
+    //GPIO Port Control (GPIOPCTL) PA0-> U0Rx PA1-> U0Tx pag.688
+    GPIOA->PCTL = (GPIOA->PCTL&0xFFFFFF00) | 0x00000011;// (1<<0) | (1<<4);//0x00000011
+    // GPIO Digital Enable (GPIODEN) pag.682
+    GPIOA->DEN = (1<<0) | (1<<1);//PA1 PA0
+    //UART0 UART Control (UARTCTL) pag.918 DISABLE!!
+    UART0->CTL = (0<<9) | (0<<8) | (0<<0);
+
+
+    // UART Integer Baud-Rate Divisor (UARTIBRD) pag.914
+    // UART Fractional Baud-Rate Divisor (UARTFBRD) pag.915
+    
+    //BRD = BRDI + BRDF = UARTSysClk / (ClkDiv * Baud Rate)
+    //BRD = 30,000,000 / (16 * 57600) = 32.55208333
+    
+    //UARTFBRD[DIVFRAC] = integer(BRDF * 64 + 0.5)
+    //UARTFBRD[DIVFRAC] = integer(0.55208333 * 64 + 0.5) = 35.83
+
+
+    // UART Integer Baud-Rate Divisor (UARTIBRD) pag.914
+    UART0->IBRD = 32;
+    // UART Fractional Baud-Rate Divisor (UARTFBRD) pag.915
+    UART0->FBRD = 35;
+    //  UART Line Control (UARTLCRH) pag.916
+    UART0->LCRH = (0x3<<5)|(1<<4);
+    //  UART Clock Configuration(UARTCC) pag.939
+    UART0->CC =(0<<0);
+    //Disable UART0 UART Control (UARTCTL) pag.918
+    UART0->CTL = (1<<0) | (1<<8) | (1<<9);
+
+}
+
+/*
 extern void Configurar_UART5(void)
 {
     //-------------------------------------CONFIGURACIÓN DEL PIN
@@ -33,13 +71,13 @@ extern void Configurar_UART5(void)
 
     // UART Integer Baud-Rate Divisor (UARTIBRD) pag.914
     // UART Fractional Baud-Rate Divisor (UARTFBRD) pag.915
-    /*
-    BRD = BRDI + BRDF = UARTSysClk / (ClkDiv * Baud Rate)
-    BRD = 30,000,000 / (16 * 57600) = 32.55208333
     
-    UARTFBRD[DIVFRAC] = integer(BRDF * 64 + 0.5)
-    UARTFBRD[DIVFRAC] = integer(0.55208333 * 64 + 0.5) = 35.83
-    */
+    //BRD = BRDI + BRDF = UARTSysClk / (ClkDiv * Baud Rate)
+    //BRD = 30,000,000 / (16 * 57600) = 32.55208333
+    
+    //UARTFBRD[DIVFRAC] = integer(BRDF * 64 + 0.5)
+    //UARTFBRD[DIVFRAC] = integer(0.55208333 * 64 + 0.5) = 35.83
+    
     UART5->IBRD = 32;
     UART5->FBRD = 35;
     //  UART Line Control (UARTLCRH) pag.916
@@ -51,6 +89,7 @@ extern void Configurar_UART5(void)
     
     
 }
+*/
 
 extern char readChar(void)
 {
