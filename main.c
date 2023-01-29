@@ -5,7 +5,7 @@ int main(void)
     uint16_t Result[6];
     char ADC[4];
     Configurar_PLL(_25MHZ);  //Configuración de velocidad de reloj
-    Configurar_UART5();// FCLK 30MHZ Baudrate 57600
+    Configurar_UART0();// FCLK 30MHZ Baudrate 57600
     Configurar_GPIO();
     Configuracion_ADC();
 
